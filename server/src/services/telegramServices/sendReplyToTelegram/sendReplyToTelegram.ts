@@ -3,14 +3,15 @@ import axios from "axios";
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
 
 export const sendReplyToTelegram = async (
-  text: string,
-  reply_to_message_id: number
+  telegramChatId: number,
+  message: string,
+  messageId: number
 ): Promise<boolean> => {
   try {
     const response = await axios.post(`${TELEGRAM_API_URL}/sendMessage`, {
-      chat_id: process.env.TELEGRAM_CHAT_ID,
-      text: text,
-      reply_to_message_id: reply_to_message_id,
+      chat_id: telegramChatId,
+      text: message,
+      reply_to_message_id: messageId,
     });
 
     return response.data.ok;

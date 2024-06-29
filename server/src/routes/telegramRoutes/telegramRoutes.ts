@@ -8,7 +8,7 @@ const router = Router();
 
 router.post("/set-webhook", setWebhook);
 router.post("/webhook", handleWebhook);
-router.post("/send-message", sendMessage);
-router.post("/send-reply", sendReply);
+router.post("/message", sendMessage);
+router.post("/reply", sendReply);
 
 export default router;

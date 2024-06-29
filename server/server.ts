@@ -6,7 +6,7 @@ import cors from "cors";
 // Routes Import
 import telegramRoutes from "../server/src/routes/telegramRoutes/telegramRoutes.js";
 import projectRoutes from "../server/src/routes/portalRoutes/projectRoutes/projectRoutes.js";
-
+import ticketRoutes from "../server/src/routes/portalRoutes/ticketRoutes/ticketRoutes.js";
 // Constants
 const app = express();
 const PORT: Number = parseInt(process.env.PORT as string, 10) || 4000;
@@ -22,6 +22,7 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/portal/projects", projectRoutes);
+app.use("/api/portal/tickets", ticketRoutes);
 app.use("/api/telegram", telegramRoutes);
 
 // Server setup

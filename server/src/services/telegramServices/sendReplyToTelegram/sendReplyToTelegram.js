@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import axios from "axios";
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
-export const sendReplyToTelegram = (text, reply_to_message_id) => __awaiter(void 0, void 0, void 0, function* () {
+export const sendReplyToTelegram = (telegramChatId, message, messageId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield axios.post(`${TELEGRAM_API_URL}/sendMessage`, {
-            chat_id: process.env.TELEGRAM_CHAT_ID,
-            text: text,
-            reply_to_message_id: reply_to_message_id,
+            chat_id: telegramChatId,
+            text: message,
+            reply_to_message_id: messageId,
         });
         return response.data.ok;
     }

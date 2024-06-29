@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { sendReplyToTelegram } from "../../../services/telegramServices/sendReplyToTelegram/sendReplyToTelegram.js";
 export const sendReply = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { message, reply_to_message_id } = req.body;
-    if (!message || !reply_to_message_id) {
+    const { message, messageId, telegramChatId } = req.body;
+    if (!message || !messageId) {
         return res.status(400).send("Message and reply_to_message_id are required");
     }
     try {
-        const success = yield sendReplyToTelegram(message, reply_to_message_id);
+        const success = yield sendReplyToTelegram(message, messageId, telegramChatId);
         if (success) {
             return res.status(200).send("Reply sent successfully");
         }
