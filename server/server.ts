@@ -1,44 +1,28 @@
 // Importing module
 import express from "express";
 import "dotenv/config";
-import axios from "axios";
+import cors from "cors";
 
+// Routes Import
+import telegramRoutes from "../server/src/routes/telegramRoutes/telegramRoutes.js";
+import projectRoutes from "../server/src/routes/portalRoutes/projectRoutes/projectRoutes.js";
+
+// Constants
 const app = express();
-app.use(express.json());
-
 const PORT: Number = parseInt(process.env.PORT as string, 10) || 4000;
 
-// Telegram Bot Configuration
-const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+// Middlewares
+app.use(express.json());
+app.use(cors());
 
-// Handling GET / Request
+// Using the routes defined in the routes directory
 app.get("/", (req, res) => {
-  res.send("Welcome to typescript backend!");
+  res.send("Working");
 });
 
-app.post("/send-message", async (req, res) => {
-  const { message } = req.body;
-
-  if (!message) {
-    return res.status(400).send("Message is required");
-  }
-
-  try {
-    const response = await axios.post(`${TELEGRAM_API_URL}/sendMessage`, {
-      chat_id: process.env.TELEGRAM_CHAT_ID,
-      text: message,
-    });
-
-    if (response.data.ok) {
-      return res.status(200).send("Message sent successfully");
-    } else {
-      return res.status(500).send("Failed to send message");
-    }
-  } catch (error) {
-    console.error("Error sending message:", error);
-    return res.status(500).send("Error sending message");
-  }
-});
+// Routes
+app.use("/api/portal/projects", projectRoutes);
+app.use("/api/telegram", telegramRoutes);
 
 // Server setup
 app.listen(PORT, () => {

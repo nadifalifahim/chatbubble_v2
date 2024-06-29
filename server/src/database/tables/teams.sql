@@ -1,0 +1,7 @@
+CREATE TABLE Teams (
+    team_id SERIAL PRIMARY KEY,
+    team_name VARCHAR(100) NOT NULL,
+    team_description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

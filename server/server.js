@@ -1,15 +1,23 @@
 // Importing module
 import express from "express";
 import "dotenv/config";
+import cors from "cors";
+// Routes Import
+import telegramRoutes from "../server/src/routes/telegramRoutes/telegramRoutes.js";
+import projectRoutes from "../server/src/routes/portalRoutes/projectRoutes/projectRoutes.js";
+// Constants
 const app = express();
-app.use(express.json());
 const PORT = parseInt(process.env.PORT, 10) || 4000;
-// Telegram Bot Configuration
-const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
-// Handling GET / Request
+// Middlewares
+app.use(express.json());
+app.use(cors());
+// Using the routes defined in the routes directory
 app.get("/", (req, res) => {
-    res.send("Welcome to typescript backend!");
+    res.send("Working");
 });
+// Routes
+app.use("/api/portal/projects", projectRoutes);
+app.use("/api/telegram", telegramRoutes);
 // Server setup
 app.listen(PORT, () => {
     console.log("Server is listening on port http://localhost:" + PORT);
