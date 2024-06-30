@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cors());
 // Using the routes defined in the routes directory
 app.get("/", (req, res) => {
-    res.send("Working");
+  res.send("Working");
 });
 // Routes
 app.use("/api/portal/projects", projectRoutes);
@@ -22,5 +22,5 @@ app.use("/api/portal/tickets", ticketRoutes);
 app.use("/api/telegram", telegramRoutes);
 // Server setup
 app.listen(PORT, () => {
-    console.log("Server is listening on port http://localhost:" + PORT);
+  console.log("Server is listening on port" + PORT);
 });

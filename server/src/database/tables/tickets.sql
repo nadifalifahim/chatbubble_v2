@@ -14,8 +14,8 @@ CREATE TABLE Tickets (
     telegram_message_id bigint,
     telegram_chat_id bigint,
     telegram_chat_title TEXT,
-    telegram_attachment_id TEXT;
-    project_id INT NOT NULL,
+    telegram_attachment_id TEXT,
+    project_id VARCHAR(20) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     closed_at TIMESTAMP,

@@ -69,7 +69,7 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
             telegramChatId: telegramUpdate.message.chat.id,
             telegramChatTitle: telegramUpdate.message.chat.title,
             status: "open",
-            priority: getRandomData(["high", "low", "mid"]),
+            priority: getRandomData(["high", "low", "medium"]),
         };
         try {
             // Attempt to create the ticket

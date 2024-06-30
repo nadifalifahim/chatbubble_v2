@@ -74,7 +74,7 @@ export const handleWebhook = async (req: Request, res: Response) => {
       telegramChatId: telegramUpdate.message.chat.id,
       telegramChatTitle: telegramUpdate.message.chat.title,
       status: "open",
-      priority: getRandomData(["high", "low", "mid"]),
+      priority: getRandomData(["high", "low", "medium"]),
     };
 
     try {
