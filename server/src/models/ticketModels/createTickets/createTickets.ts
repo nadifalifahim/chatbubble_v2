@@ -1,4 +1,4 @@
-import { PoolClient } from "pg";
+import { PoolClient, QueryResult } from "pg";
 import { db } from "../../../database/database.js";
 export interface Ticket {
   ticket_id?: string;
@@ -47,6 +47,24 @@ export class TicketModel {
     } catch (error) {
       console.error("Error creating ticket:", error);
       return null;
+    } finally {
+      client.release();
+    }
+  }
+
+  async updateTicketStatus(ticketId: string, status: string): Promise<boolean> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query =
+        "UPDATE tickets SET ticket_status = $1 WHERE ticket_id = $2";
+      const values = [status, ticketId];
+      const result: QueryResult = await client.query(query, values);
+
+      // Check that result is defined and has rowCount
+      return result && result.rowCount !== null && result.rowCount > 0;
+    } catch (error) {
+      console.error("Error updating ticket status:", error);
+      return false;
     } finally {
       client.release();
     }
@@ -107,7 +125,7 @@ export class TicketModel {
       const result = await client.query(query, values);
       return result.rows;
     } catch (error) {
-      console.error("Error fetching tickets:", error);
+      console.error("Error fetching tickets: ", error);
       return [];
     } finally {
       client.release();

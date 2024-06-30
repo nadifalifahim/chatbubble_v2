@@ -45,6 +45,25 @@ export class TicketModel {
             }
         });
     }
+    updateTicketStatus(ticketId, status) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const client = yield this.pool.connect();
+            try {
+                const query = "UPDATE tickets SET ticket_status = $1 WHERE ticket_id = $2";
+                const values = [status, ticketId];
+                const result = yield client.query(query, values);
+                // Check that result is defined and has rowCount
+                return result && result.rowCount !== null && result.rowCount > 0;
+            }
+            catch (error) {
+                console.error("Error updating ticket status:", error);
+                return false;
+            }
+            finally {
+                client.release();
+            }
+        });
+    }
     getTickets(fromDate, toDate) {
         return __awaiter(this, void 0, void 0, function* () {
             const client = yield this.pool.connect();
@@ -94,7 +113,7 @@ export class TicketModel {
                 return result.rows;
             }
             catch (error) {
-                console.error("Error fetching tickets:", error);
+                console.error("Error fetching tickets: ", error);
                 return [];
             }
             finally {

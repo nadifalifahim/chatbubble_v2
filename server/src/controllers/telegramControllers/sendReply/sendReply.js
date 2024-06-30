@@ -14,7 +14,7 @@ export const sendReply = (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(400).send("Message and reply_to_message_id are required");
     }
     try {
-        const success = yield sendReplyToTelegram(message, messageId, telegramChatId);
+        const success = yield sendReplyToTelegram(telegramChatId, message, messageId);
         if (success) {
             return res.status(200).send("Reply sent successfully");
         }

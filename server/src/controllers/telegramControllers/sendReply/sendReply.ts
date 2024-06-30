@@ -10,9 +10,10 @@ export const sendReply = async (req: Request, res: Response) => {
 
   try {
     const success = await sendReplyToTelegram(
+      telegramChatId,
       message,
       messageId,
-      telegramChatId
+      
     );
 
     if (success) {

@@ -7,7 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { getAttachmentDownloadLink } from "../../../utils/telegramUtils/getAttachmentDownloadLink/getAttachmentDownloadLink.js";
 import { TicketModel } from "../../../models/ticketModels/createTickets/createTickets.js";
 import { sendReplyToTelegram } from "../../../services/telegramServices/sendReplyToTelegram/sendReplyToTelegram.js";
 const ticketModel = new TicketModel();
@@ -36,36 +35,41 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 : telegramUpdate.message.document.file_id,
         };
         try {
-            // Get file path
-            const telegramFileUrl = yield getAttachmentDownloadLink(ticket.telegramAttachmentId);
-            if (telegramFileUrl) {
-                // Log the received image URL and caption
-                console.log(`Received image URL: ${telegramFileUrl} from chat ID: ${ticket.telegramChatId}`);
-                console.log(`Caption: ${ticket.message}`);
+            // Attempt to create the ticket
+            const ticketId = yield ticketModel.createTicket(ticket);
+            const messageText = `Dear ${ticket.reportedBy},\n\nYour ticket has been raised.\n\nYour Ticket ID is: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}.\n\nFor getting updates on your ticket send a message in the following format:\n\n #Update: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}\n\nThank you.`;
+            // Check if ticketID is returned successfully
+            if (ticketId) {
+                console.log("Ticket ID is", ticketId.ticket_id);
+                yield sendReplyToTelegram(ticket.telegramChatId, messageText, ticket.telegramMessageId);
             }
             else {
-                console.error("Failed to get file URL from Telegram");
+                console.log("Ticket creation failed, no ID returned.");
             }
         }
         catch (error) {
-            console.error("Error getting file URL:", error);
+            // Handle any errors that occur during the creation of the ticket
+            console.error("Error creating ticket:", error);
         }
     }
     else if (!telegramUpdate.message.reply_to_message &&
         telegramUpdate.message) {
+        const getRandomData = (data) => {
+            return data[Math.floor(Math.random() * data.length)];
+        };
         const ticket = {
             message: telegramUpdate.message.text,
             reportedBy: `${telegramUpdate.message.from.first_name} ${telegramUpdate.message.from.last_name}`,
             platform: "Telegram",
             assignedTeamId: 1,
-            categoryId: 1,
+            categoryId: getRandomData([1, 3, 4]),
             projectId: "PROJ1",
             telegramUserId: telegramUpdate.message.from.id,
             telegramMessageId: telegramUpdate.message.message_id,
             telegramChatId: telegramUpdate.message.chat.id,
             telegramChatTitle: telegramUpdate.message.chat.title,
             status: "open",
-            priority: "high",
+            priority: getRandomData(["high", "low", "mid"]),
         };
         try {
             // Attempt to create the ticket
