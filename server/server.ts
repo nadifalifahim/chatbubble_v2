@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 });
 
 // Routes
-app.use("/api/portal/projects", projectRoutes);
+app.use("/api/portal", projectRoutes);
 app.use("/api/portal/tickets", ticketRoutes);
 app.use("/api/telegram", telegramRoutes);
 

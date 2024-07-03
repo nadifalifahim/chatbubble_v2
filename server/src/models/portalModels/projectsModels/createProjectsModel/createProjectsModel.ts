@@ -31,4 +31,18 @@ export class ProjectModel {
       client.release();
     }
   }
+
+  async getProjects(): Promise<Project[] | null> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = "SELECT * FROM projects";
+      const result = await client.query(query);
+      return result.rows;
+    } catch (error) {
+      console.error("Error creating project:", error);
+      return null;
+    } finally {
+      client.release();
+    }
+  }
 }

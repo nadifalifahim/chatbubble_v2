@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { getAttachmentDownloadLink } from "../../../utils/telegramUtils/getAttachmentDownloadLink/getAttachmentDownloadLink.js";
 import { TicketModel } from "../../../models/ticketModels/createTickets/createTickets.js";
 import { sendReplyToTelegram } from "../../../services/telegramServices/sendReplyToTelegram/sendReplyToTelegram.js";
 
