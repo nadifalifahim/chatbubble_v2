@@ -18,7 +18,7 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         (telegramUpdate.message.photo || telegramUpdate.message.document)) {
         const ticket = {
             message: telegramUpdate.message.caption,
-            reportedBy: telegramUpdate.message.from.last_name
+            reportedBy: telegramUpdate.message.from.last_name !== ""
                 ? `${telegramUpdate.message.from.first_name} ${telegramUpdate.message.from.last_name}`
                 : telegramUpdate.message.from.first_name,
             platform: "Telegram",
@@ -61,7 +61,7 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         };
         const ticket = {
             message: telegramUpdate.message.text,
-            reportedBy: telegramUpdate.message.from.last_name
+            reportedBy: telegramUpdate.message.from.last_name !== ""
                 ? `${telegramUpdate.message.from.first_name} ${telegramUpdate.message.from.last_name}`
                 : telegramUpdate.message.from.first_name,
             platform: "Telegram",
