@@ -13,7 +13,10 @@ const app = express();
 const PORT: Number = parseInt(process.env.PORT as string, 10) || 4000;
 
 // CORS Config
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://chatbubble-4eos.onrender.com",
+];
 
 const corsOptions: CorsOptions = {
   origin: function (

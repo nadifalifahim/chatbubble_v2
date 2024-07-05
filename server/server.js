@@ -11,7 +11,10 @@ import authRoutes from "../server/src/routes/authRoutes/authRoutes.js";
 const app = express();
 const PORT = parseInt(process.env.PORT, 10) || 4000;
 // CORS Config
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = [
+    "http://localhost:3000",
+    "https://chatbubble-4eos.onrender.com",
+];
 const corsOptions = {
     origin: function (origin, callback) {
         if (allowedOrigins.includes(origin) || !origin) {
