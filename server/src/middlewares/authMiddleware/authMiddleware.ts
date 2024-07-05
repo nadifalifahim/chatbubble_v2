@@ -12,13 +12,14 @@ export const validateToken = async (
 ) => {
   try {
     if (!req.headers.cookie) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ error: "Unauthorized. Cookie missing." });
     }
-
+    console.log(req.headers.cookie);
+    console.log(parseCookies(req.headers.cookie));
     const cookies = parseCookies(req.headers.cookie);
     const token = cookies.token;
     if (!token) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ error: "Unauthorized. Token missing" });
     }
 
     const decoded = jwt.verify(token, JWT_SECRET as string) as {
@@ -43,5 +44,3 @@ const parseCookies = (cookie: string): Record<string, string> => {
     return acc;
   }, {} as Record<string, string>);
 };
-
-

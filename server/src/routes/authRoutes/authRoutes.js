@@ -6,7 +6,6 @@ router.post("/register", register);
 router.post("/login", login);
 router.post("/sign-out", signOut);
 router.post("/protected", validateToken, (req, res) => {
-    const { full_name } = res.locals;
-    res.status(200).json({ authorized: true, full_name: full_name });
+    res.status(200).json({ authorized: true });
 });
 export default router;

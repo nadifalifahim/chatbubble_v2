@@ -12,12 +12,14 @@ const JWT_SECRET = process.env.JWT_SECRET;
 export const validateToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.headers.cookie) {
-            return res.status(401).json({ error: "Unauthorized" });
+            return res.status(401).json({ error: "Unauthorized. Cookie missing." });
         }
+        console.log(req.headers.cookie);
+        console.log(parseCookies(req.headers.cookie));
         const cookies = parseCookies(req.headers.cookie);
         const token = cookies.token;
         if (!token) {
-            return res.status(401).json({ error: "Unauthorized" });
+            return res.status(401).json({ error: "Unauthorized. Token missing" });
         }
         const decoded = jwt.verify(token, JWT_SECRET);
         next();
