@@ -25,6 +25,7 @@ export const validateToken = async (
     const decoded = jwt.verify(token, JWT_SECRET as string) as {
       userId: string;
     };
+    console.log(decoded);
 
     next();
   } catch (error) {

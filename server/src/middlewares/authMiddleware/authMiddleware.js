@@ -22,6 +22,7 @@ export const validateToken = (req, res, next) => __awaiter(void 0, void 0, void 
             return res.status(401).json({ error: "Unauthorized. Token missing" });
         }
         const decoded = jwt.verify(token, JWT_SECRET);
+        console.log(decoded);
         next();
     }
     catch (error) {
