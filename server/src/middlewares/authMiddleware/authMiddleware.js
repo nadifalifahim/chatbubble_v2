@@ -11,12 +11,13 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET;
 export const validateToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!req.headers.cookie) {
+        const cookieHeader = yield req.headers.cookie;
+        console.log(req.headers.cookie);
+        if (!cookieHeader) {
             return res.status(401).json({ error: "Unauthorized. Cookie missing." });
         }
-        console.log(req.headers.cookie);
-        console.log(parseCookies(req.headers.cookie));
-        const cookies = parseCookies(req.headers.cookie);
+        console.log(parseCookies(cookieHeader));
+        const cookies = parseCookies(cookieHeader);
         const token = cookies.token;
         if (!token) {
             return res.status(401).json({ error: "Unauthorized. Token missing" });

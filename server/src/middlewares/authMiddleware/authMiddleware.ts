@@ -11,12 +11,14 @@ export const validateToken = async (
   next: NextFunction
 ) => {
   try {
-    if (!req.headers.cookie) {
+    const cookieHeader = await req.headers.cookie;
+    console.log(req.headers.cookie);
+    if (!cookieHeader) {
       return res.status(401).json({ error: "Unauthorized. Cookie missing." });
     }
-    console.log(req.headers.cookie);
-    console.log(parseCookies(req.headers.cookie));
-    const cookies = parseCookies(req.headers.cookie);
+
+    console.log(parseCookies(cookieHeader));
+    const cookies = parseCookies(cookieHeader);
     const token = cookies.token;
     if (!token) {
       return res.status(401).json({ error: "Unauthorized. Token missing" });
