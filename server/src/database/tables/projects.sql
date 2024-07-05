@@ -4,9 +4,17 @@ CREATE TABLE Projects (
     project_id VARCHAR(20) PRIMARY KEY,
     project_name VARCHAR(100) NOT NULL,
     project_description TEXT,
+    project_status VARCHAR(10),
+    telegram_chat_id TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE Projects
+ADD COLUMN project_status VARCHAR(10);
+
+ALTER TABLE Projects
+ADD COLUMN telegram_chat_id TEXT;
 
 CREATE OR REPLACE FUNCTION generate_project_id()
 RETURNS TRIGGER AS $$

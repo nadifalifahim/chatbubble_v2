@@ -119,9 +119,6 @@ export class TicketModel {
 
       query += ` ORDER BY created_at DESC`;
 
-      console.log("Executing query:", query); // Debug query
-      console.log("With values:", values); // Debug values
-
       const result = await client.query(query, values);
       return result.rows;
     } catch (error) {
