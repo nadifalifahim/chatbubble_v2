@@ -25,12 +25,6 @@ export const validateToken = async (
       userId: string;
     };
 
-    // Add user information to res.locals for easy access in controllers
-    const userInfo = await getUserInfo(decoded.userId);
-    console.log(decoded);
-    console.log("Info", userInfo.full_name);
-    res.locals.full_name = userInfo.full_name;
-
     next();
   } catch (error) {
     console.error("Token validation error:", error);
@@ -50,9 +44,4 @@ const parseCookies = (cookie: string): Record<string, string> => {
   }, {} as Record<string, string>);
 };
 
-const getUserInfo = async (userId: string) => {
-  const client: PoolClient = await db.pool.connect();
-  const userQuery = `SELECT full_name, user_id FROM users WHERE user_id = $1`;
-  const userInfo = await client.query(userQuery, [userId]);
-  return userInfo.rows[0];
-};
+

@@ -39,7 +39,7 @@ export const register = (req, res) => __awaiter(void 0, void 0, void 0, function
 export const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const { token, message } = yield loginUser({ email, password });
+        const { token, message, full_name } = yield loginUser({ email, password });
         res.cookie("token", token, {
             maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
             httpOnly: true,
@@ -47,7 +47,7 @@ export const login = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             secure: true,
             sameSite: "none", // Allow cross-site requests
         });
-        res.status(200).json({ message });
+        res.status(200).json({ message, full_name });
     }
     catch (error) {
         console.error("Error:", error);
@@ -62,12 +62,6 @@ export const login = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 export const signOut = (req, res) => {
     try {
         res.clearCookie("token", {
-            path: "/",
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-        });
-        res.clearCookie("employee_id", {
             path: "/",
             httpOnly: true,
             secure: true,

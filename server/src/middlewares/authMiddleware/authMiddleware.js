@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import jwt from "jsonwebtoken";
-import { db } from "../../database/database.js";
 const JWT_SECRET = process.env.JWT_SECRET;
 export const validateToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -21,11 +20,6 @@ export const validateToken = (req, res, next) => __awaiter(void 0, void 0, void 
             return res.status(401).json({ error: "Unauthorized" });
         }
         const decoded = jwt.verify(token, JWT_SECRET);
-        // Add user information to res.locals for easy access in controllers
-        const userInfo = yield getUserInfo(decoded.userId);
-        console.log(decoded);
-        console.log("Info", userInfo.full_name);
-        res.locals.full_name = userInfo.full_name;
         next();
     }
     catch (error) {
@@ -44,9 +38,3 @@ const parseCookies = (cookie) => {
         return acc;
     }, {});
 };
-const getUserInfo = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const client = yield db.pool.connect();
-    const userQuery = `SELECT full_name, user_id FROM users WHERE user_id = $1`;
-    const userInfo = yield client.query(userQuery, [userId]);
-    return userInfo.rows[0];
-});

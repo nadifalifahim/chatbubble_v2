@@ -18,7 +18,9 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         (telegramUpdate.message.photo || telegramUpdate.message.document)) {
         const ticket = {
             message: telegramUpdate.message.caption,
-            reportedBy: `${telegramUpdate.message.from.first_name} ${telegramUpdate.message.from.last_name}`,
+            reportedBy: telegramUpdate.message.from.last_name
+                ? `${telegramUpdate.message.from.first_name} ${telegramUpdate.message.from.last_name}`
+                : telegramUpdate.message.from.first_name,
             platform: "Telegram",
             assignedTeamId: 1,
             categoryId: 1,
@@ -37,7 +39,7 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         try {
             // Attempt to create the ticket
             const ticketId = yield ticketModel.createTicket(ticket);
-            const messageText = `Dear ${ticket.reportedBy},\n\nYour ticket has been raised.\n\nYour Ticket ID is: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}.\n\nFor getting updates on your ticket send a message in the following format:\n\n #Update: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}\n\nThank you.`;
+            const messageText = `Dear ${ticket.reportedBy},\n\nYour ticket has been raised.\n\nYour Ticket ID is: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}.\n\nFor getting updates on your ticket send a message in the following format:\n\n#Update: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}\n\nThank you.`;
             // Check if ticketID is returned successfully
             if (ticketId) {
                 console.log("Ticket ID is", ticketId.ticket_id);
@@ -59,7 +61,9 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         };
         const ticket = {
             message: telegramUpdate.message.text,
-            reportedBy: `${telegramUpdate.message.from.first_name} ${telegramUpdate.message.from.last_name}`,
+            reportedBy: telegramUpdate.message.from.last_name
+                ? `${telegramUpdate.message.from.first_name} ${telegramUpdate.message.from.last_name}`
+                : telegramUpdate.message.from.first_name,
             platform: "Telegram",
             assignedTeamId: 1,
             categoryId: getRandomData([1, 3, 4]),
@@ -74,7 +78,7 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         try {
             // Attempt to create the ticket
             const ticketId = yield ticketModel.createTicket(ticket);
-            const messageText = `Dear ${ticket.reportedBy}, Your ticket has been raised.\n\nYour Ticket ID is: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}.\n\nFor getting updates on your ticket send a message in the following format:\n\n #Update: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}\n\nThank you.`;
+            const messageText = `Dear ${ticket.reportedBy},\n\nYour ticket has been raised.\n\nYour Ticket ID is: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}.\n\nFor getting updates on your ticket send a message in the following format:\n\n#Update: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}\n\nThank you.`;
             // Check if ticketID is returned successfully
             if (ticketId) {
                 console.log("Ticket ID is", ticketId.ticket_id);

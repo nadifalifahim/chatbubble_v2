@@ -35,7 +35,7 @@ export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-    const { token, message } = await loginUser({ email, password });
+    const { token, message, full_name } = await loginUser({ email, password });
 
     res.cookie("token", token, {
       maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
@@ -45,7 +45,7 @@ export const login = async (req: Request, res: Response) => {
       sameSite: "none", // Allow cross-site requests
     });
 
-    res.status(200).json({ message });
+    res.status(200).json({ message, full_name });
   } catch (error) {
     console.error("Error:", error);
     if (error instanceof Error) {
@@ -59,12 +59,6 @@ export const login = async (req: Request, res: Response) => {
 export const signOut = (req: Request, res: Response) => {
   try {
     res.clearCookie("token", {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
-    res.clearCookie("employee_id", {
       path: "/",
       httpOnly: true,
       secure: true,

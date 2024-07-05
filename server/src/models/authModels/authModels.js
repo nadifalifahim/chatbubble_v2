@@ -36,7 +36,7 @@ export const registerUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({
 export const loginUser = (_b) => __awaiter(void 0, [_b], void 0, function* ({ email, password, }) {
     const client = yield db.pool.connect();
     try {
-        const userQuery = `SELECT user_id, password_hash FROM users WHERE email = $1`;
+        const userQuery = `SELECT user_id, full_name, password_hash FROM users WHERE email = $1`;
         const userResult = yield client.query(userQuery, [email]);
         if (userResult.rows.length === 0) {
             throw new Error("Email not found. Please try again.");
@@ -53,7 +53,7 @@ export const loginUser = (_b) => __awaiter(void 0, [_b], void 0, function* ({ em
         const token = jwt.sign({ userId: user.user_id }, JWT_SECRET, {
             expiresIn: "24h",
         });
-        return { token, message: "Login successful" };
+        return { token, message: "Login successful", full_name: user.full_name };
     }
     catch (error) {
         console.error("Error:", error);

@@ -27,6 +27,7 @@ interface RegistrationResponse {
 interface LoginResponse {
   token: string;
   message: string;
+  full_name: string;
 }
 
 export const registerUser = async ({
@@ -67,7 +68,7 @@ export const loginUser = async ({
 }: UserLogin): Promise<LoginResponse> => {
   const client: PoolClient = await db.pool.connect();
   try {
-    const userQuery = `SELECT user_id, password_hash FROM users WHERE email = $1`;
+    const userQuery = `SELECT user_id, full_name, password_hash FROM users WHERE email = $1`;
     const userResult = await client.query(userQuery, [email]);
 
     if (userResult.rows.length === 0) {
@@ -79,7 +80,7 @@ export const loginUser = async ({
     if (!user.password_hash) {
       throw new Error("Password not found for the user.");
     }
-    
+
     const passwordMatch = await bcrypt.compare(password, user.password_hash);
 
     if (!passwordMatch) {
@@ -90,7 +91,7 @@ export const loginUser = async ({
       expiresIn: "24h",
     });
 
-    return { token, message: "Login successful" };
+    return { token, message: "Login successful", full_name: user.full_name };
   } catch (error) {
     console.error("Error:", error);
     throw error;
