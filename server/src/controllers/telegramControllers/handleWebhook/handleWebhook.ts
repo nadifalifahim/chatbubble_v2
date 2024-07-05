@@ -15,10 +15,11 @@ export const handleWebhook = async (req: Request, res: Response) => {
   ) {
     const ticket = {
       message: telegramUpdate.message.caption,
-      reportedBy:
-        telegramUpdate.message.from.last_name !== ""
-          ? `${telegramUpdate.message.from.first_name} ${telegramUpdate.message.from.last_name}`
-          : telegramUpdate.message.from.first_name,
+      reportedBy: `${telegramUpdate.message.from.first_name || ""}${
+        telegramUpdate.message.from.last_name
+          ? ` ${telegramUpdate.message.from.last_name}`
+          : ""
+      }`,
       platform: "Telegram",
       assignedTeamId: 1,
       categoryId: 1,
@@ -66,10 +67,11 @@ export const handleWebhook = async (req: Request, res: Response) => {
 
     const ticket = {
       message: telegramUpdate.message.text,
-      reportedBy:
-        telegramUpdate.message.from.last_name !== ""
-          ? `${telegramUpdate.message.from.first_name} ${telegramUpdate.message.from.last_name}`
-          : telegramUpdate.message.from.first_name,
+      reportedBy: `${telegramUpdate.message.from.first_name || ""}${
+        telegramUpdate.message.from.last_name
+          ? ` ${telegramUpdate.message.from.last_name}`
+          : ""
+      }`,
       platform: "Telegram",
       assignedTeamId: 1,
       categoryId: getRandomData([1, 3, 4]),
