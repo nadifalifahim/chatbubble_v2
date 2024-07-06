@@ -11,7 +11,7 @@ export const validateToken = async (
   next: NextFunction
 ) => {
   try {
-    const cookieHeader = await req.headers.cookie;
+    const cookieHeader = req.headers.cookie;
     console.log(req.headers.cookie);
     if (!cookieHeader) {
       return res.status(401).json({ error: "Unauthorized. Cookie missing." });

@@ -11,7 +11,7 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET;
 export const validateToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const cookieHeader = yield req.headers.cookie;
+        const cookieHeader = req.headers.cookie;
         console.log(req.headers.cookie);
         if (!cookieHeader) {
             return res.status(401).json({ error: "Unauthorized. Cookie missing." });
