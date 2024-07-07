@@ -51,4 +51,22 @@ export class ProjectModel {
             }
         });
     }
+    getProjectsByTelegramChatID(telegramChatID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const client = yield this.pool.connect();
+            try {
+                const query = "SELECT project_id FROM projects WHERE telegram_chat_id=$1";
+                const result = yield client.query(query, [telegramChatID]);
+                // Return all project IDs as an array or null if no results
+                return result.rows[0];
+            }
+            catch (error) {
+                console.error("Error fetching projects by Telegram chat ID:", error);
+                return null; // Return null in case of error
+            }
+            finally {
+                client.release();
+            }
+        });
+    }
 }

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { sendMessageToTelegram } from "../../../services/telegramServices/sendMessageToTelegram/sendMessage.js";
 
 export const sendMessage = async (req: Request, res: Response) => {
-  const { message, chatId } = req.body;
+  const { chatId, message } = req.body;
 
   if (!message) {
     return res.status(400).send("Message is required");

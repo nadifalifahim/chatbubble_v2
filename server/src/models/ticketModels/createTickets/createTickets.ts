@@ -18,6 +18,16 @@ export interface Ticket {
   telegramAttachmentId?: string;
 }
 
+export interface Ticket2 {
+  ticket_id: string;
+  ticket_status: string;
+  priority: string;
+  reported_by: string;
+  platform: string;
+  team_name: string;
+  closed_at: Date;
+}
+
 export class TicketModel {
   private pool = db.pool; // Replace with your database connection pool
 
@@ -72,7 +82,8 @@ export class TicketModel {
 
   async getTickets(
     fromDate: Date | null,
-    toDate: Date | null
+    toDate: Date | null,
+    projectID: String
   ): Promise<Ticket[]> {
     const client: PoolClient = await this.pool.connect();
     try {
@@ -103,6 +114,9 @@ export class TicketModel {
     `;
       const values: any[] = [];
 
+      query += ` AND t.project_id = $${values.length + 1}`;
+      values.push(projectID.toUpperCase());
+
       if (fromDate) {
         fromDate.setHours(0, 0, 0, 0);
         query += ` AND t.created_at >= $${values.length + 1}`;
@@ -117,13 +131,47 @@ export class TicketModel {
         values.push(endOfToDate);
       }
 
-      query += ` ORDER BY created_at DESC`;
+      query += " ORDER BY t.created_at DESC";
 
       const result = await client.query(query, values);
       return result.rows;
     } catch (error) {
       console.error("Error fetching tickets: ", error);
       return [];
+    } finally {
+      client.release();
+    }
+  }
+
+  async getTicket(ticketID: string | null): Promise<Ticket2 | null> {
+    if (!ticketID) {
+      console.error("Invalid ticketID provided.");
+      return null; // Return null if ticketID is invalid
+    }
+
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = `
+        SELECT
+          t.ticket_id,
+          t.ticket_status,
+          t.priority,
+          t.reported_by,
+          t.platform,
+          tm.team_name,
+          t.closed_at
+        FROM Tickets t
+        JOIN Teams tm ON t.assigned_team_id = tm.team_id
+        WHERE t.ticket_id = $1
+      `;
+      const value = [ticketID];
+      const result = await client.query(query, value);
+
+      // Return the first ticket object or null if no results
+      return result.rows.length > 0 ? result.rows[0] : null;
+    } catch (error) {
+      console.error("Error fetching ticket: ", error);
+      return null; // Return null in case of error
     } finally {
       client.release();
     }

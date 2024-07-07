@@ -64,7 +64,7 @@ export class TicketModel {
             }
         });
     }
-    getTickets(fromDate, toDate) {
+    getTickets(fromDate, toDate, projectID) {
         return __awaiter(this, void 0, void 0, function* () {
             const client = yield this.pool.connect();
             try {
@@ -94,6 +94,8 @@ export class TicketModel {
       WHERE TRUE
     `;
                 const values = [];
+                query += ` AND t.project_id = $${values.length + 1}`;
+                values.push(projectID.toUpperCase());
                 if (fromDate) {
                     fromDate.setHours(0, 0, 0, 0);
                     query += ` AND t.created_at >= $${values.length + 1}`;
@@ -106,13 +108,48 @@ export class TicketModel {
                     query += ` AND t.created_at <= $${values.length + 1}`;
                     values.push(endOfToDate);
                 }
-                query += ` ORDER BY created_at DESC`;
+                query += " ORDER BY t.created_at DESC";
                 const result = yield client.query(query, values);
                 return result.rows;
             }
             catch (error) {
                 console.error("Error fetching tickets: ", error);
                 return [];
+            }
+            finally {
+                client.release();
+            }
+        });
+    }
+    getTicket(ticketID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!ticketID) {
+                console.error("Invalid ticketID provided.");
+                return null; // Return null if ticketID is invalid
+            }
+            const client = yield this.pool.connect();
+            try {
+                const query = `
+        SELECT
+          t.ticket_id,
+          t.ticket_status,
+          t.priority,
+          t.reported_by,
+          t.platform,
+          tm.team_name,
+          t.closed_at
+        FROM Tickets t
+        JOIN Teams tm ON t.assigned_team_id = tm.team_id
+        WHERE t.ticket_id = $1
+      `;
+                const value = [ticketID];
+                const result = yield client.query(query, value);
+                // Return the first ticket object or null if no results
+                return result.rows.length > 0 ? result.rows[0] : null;
+            }
+            catch (error) {
+                console.error("Error fetching ticket: ", error);
+                return null; // Return null in case of error
             }
             finally {
                 client.release();

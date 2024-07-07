@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { sendMessageToTelegram } from "../../../services/telegramServices/sendMessageToTelegram/sendMessage.js";
 export const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { message, chatId } = req.body;
+    const { chatId, message } = req.body;
     if (!message) {
         return res.status(400).send("Message is required");
     }

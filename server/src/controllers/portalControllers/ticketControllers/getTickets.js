@@ -10,13 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { TicketModel } from "../../../models/ticketModels/createTickets/createTickets.js";
 const ticketModel = new TicketModel();
 export const getTickets = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { from, to } = req.query;
+    const { from, to, projectID } = req.query;
     // Convert `from` and `to` to Date objects
     const fromDate = from ? new Date(from) : null;
     const toDate = to ? new Date(to) : null;
+    const projectIDStr = projectID;
     // Debug dates
-    console.log("From Date:", fromDate);
-    console.log("To Date:", toDate);
+    console.log("From Date:", projectIDStr);
     try {
         // Validate the dates
         if (fromDate && isNaN(fromDate.getTime())) {
@@ -26,7 +26,7 @@ export const getTickets = (req, res) => __awaiter(void 0, void 0, void 0, functi
             return res.status(400).json({ error: "Invalid 'to' date format" });
         }
         // Fetch tickets from the TicketModel
-        const tickets = yield ticketModel.getTickets(fromDate, toDate);
+        const tickets = yield ticketModel.getTickets(fromDate, toDate, projectIDStr);
         res.status(200).json(tickets);
     }
     catch (error) {

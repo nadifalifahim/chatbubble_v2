@@ -4,15 +4,15 @@ import { TicketModel } from "../../../models/ticketModels/createTickets/createTi
 const ticketModel = new TicketModel();
 
 export const getTickets = async (req: Request, res: Response) => {
-  const { from, to } = req.query;
+  const { from, to, projectID } = req.query;
 
   // Convert `from` and `to` to Date objects
   const fromDate = from ? new Date(from as string) : null;
   const toDate = to ? new Date(to as string) : null;
+  const projectIDStr = projectID as string;
 
   // Debug dates
-  console.log("From Date:", fromDate);
-  console.log("To Date:", toDate);
+  console.log("From Date:", projectIDStr);
 
   try {
     // Validate the dates
@@ -24,7 +24,11 @@ export const getTickets = async (req: Request, res: Response) => {
     }
 
     // Fetch tickets from the TicketModel
-    const tickets = await ticketModel.getTickets(fromDate, toDate);
+    const tickets = await ticketModel.getTickets(
+      fromDate,
+      toDate,
+      projectIDStr
+    );
     res.status(200).json(tickets);
   } catch (error) {
     console.error("Error fetching tickets:", error);

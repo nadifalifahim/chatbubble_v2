@@ -9,13 +9,41 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { TicketModel } from "../../../models/ticketModels/createTickets/createTickets.js";
 import { sendReplyToTelegram } from "../../../services/telegramServices/sendReplyToTelegram/sendReplyToTelegram.js";
+import { sendMessageToTelegram } from "../../../services/telegramServices/sendMessageToTelegram/sendMessage.js";
+import { ProjectModel } from "../../../models/portalModels/projectsModels/createProjectsModel/createProjectsModel.js";
 const ticketModel = new TicketModel();
+const projectModel = new ProjectModel();
 export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const telegramUpdate = req.body;
     console.log(telegramUpdate);
-    if (!telegramUpdate.reply_to_message &&
+    if (telegramUpdate.message && /#ChatID/.test(telegramUpdate.message.text)) {
+        // Construct the reply message with ticket details
+        const messageText = `Your chat id is: ${telegramUpdate.message.chat.id}`;
+        // Send the reply to the user
+        yield sendReplyToTelegram(telegramUpdate.message.chat.id, messageText, telegramUpdate.message.message_id);
+    }
+    else if (telegramUpdate.message &&
+        /#Update:\s*(\d+)/.test(telegramUpdate.message.text)) {
+        const match = telegramUpdate.message.text.match(/#Update:\s*(\d+)/);
+        if (match && match[1]) {
+            const ticketId = match[1]; // Extracted ticket ID
+            const ticket = yield ticketModel.getTicket(ticketId);
+            console.log(ticket);
+            if (ticket) {
+                // Construct the reply message with ticket details
+                const messageText = `Dear ${ticket.reported_by},\n\nPlease find your ticket details below:\n\nTicket ID: ${ticket.ticket_id}\nStatus: ${ticket.ticket_status.toLocaleUpperCase()}\nPriority: ${ticket.priority.toLocaleUpperCase()}\nTeam: ${ticket.team_name}\n\nThank you for reaching out to us.`;
+                // Send the reply to the user
+                yield sendReplyToTelegram(telegramUpdate.message.chat.id, messageText, telegramUpdate.message.message_id);
+            }
+            else {
+                console.log(`No ticket found with ID: ${ticketId}`);
+            }
+        }
+    }
+    else if (!telegramUpdate.reply_to_message &&
         telegramUpdate.message &&
         (telegramUpdate.message.photo || telegramUpdate.message.document)) {
+        const projectID = yield projectModel.getProjectsByTelegramChatID(telegramUpdate.message.chat.id);
         const ticket = {
             message: telegramUpdate.message.caption,
             reportedBy: `${telegramUpdate.message.from.first_name || ""}${telegramUpdate.message.from.last_name
@@ -24,7 +52,7 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
             platform: "Telegram",
             assignedTeamId: 1,
             categoryId: 1,
-            projectId: "PROJ1",
+            projectId: `${projectID === null || projectID === void 0 ? void 0 : projectID.project_id}`,
             telegramUserId: telegramUpdate.message.from.id,
             telegramMessageId: telegramUpdate.message.message_id,
             telegramChatId: telegramUpdate.message.chat.id,
@@ -54,11 +82,14 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
             console.error("Error creating ticket:", error);
         }
     }
-    else if (!telegramUpdate.message.reply_to_message &&
-        telegramUpdate.message) {
+    else if (!telegramUpdate.reply_to_message && telegramUpdate.message) {
         const getRandomData = (data) => {
             return data[Math.floor(Math.random() * data.length)];
         };
+        const projectID = yield projectModel.getProjectsByTelegramChatID(telegramUpdate.message.chat.id);
+        if (projectID) {
+            console.log(projectID.project_id);
+        }
         const ticket = {
             message: telegramUpdate.message.text,
             reportedBy: `${telegramUpdate.message.from.first_name || ""}${telegramUpdate.message.from.last_name
@@ -67,7 +98,7 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
             platform: "Telegram",
             assignedTeamId: 1,
             categoryId: getRandomData([1, 3, 4]),
-            projectId: "PROJ1",
+            projectId: `${projectID === null || projectID === void 0 ? void 0 : projectID.project_id}`,
             telegramUserId: telegramUpdate.message.from.id,
             telegramMessageId: telegramUpdate.message.message_id,
             telegramChatId: telegramUpdate.message.chat.id,
@@ -78,11 +109,13 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         try {
             // Attempt to create the ticket
             const ticketId = yield ticketModel.createTicket(ticket);
-            const messageText = `Dear ${ticket.reportedBy},\n\nYour ticket has been raised.\n\nYour Ticket ID is: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}.\n\nFor getting updates on your ticket send a message in the following format:\n\n#Update: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}\n\nThank you.`;
+            const messageText1 = `Dear ${ticket.reportedBy},\n\nYour ticket has been raised.\n\nYour Ticket ID is: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}.\n\nFor getting updates on your ticket send a message in the following format:`;
+            const messageText2 = `#Update: ${ticketId === null || ticketId === void 0 ? void 0 : ticketId.ticket_id}\n\n`;
             // Check if ticketID is returned successfully
             if (ticketId) {
                 console.log("Ticket ID is", ticketId.ticket_id);
-                yield sendReplyToTelegram(ticket.telegramChatId, messageText, ticket.telegramMessageId);
+                yield sendReplyToTelegram(ticket.telegramChatId, messageText1, ticket.telegramMessageId);
+                yield sendMessageToTelegram(messageText2, ticket.telegramChatId);
             }
             else {
                 console.log("Ticket creation failed, no ID returned.");

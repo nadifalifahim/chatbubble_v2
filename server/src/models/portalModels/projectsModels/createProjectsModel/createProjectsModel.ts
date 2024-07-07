@@ -9,6 +9,10 @@ export interface Project {
   updated_at?: Date;
 }
 
+export interface ProjectID {
+  project_id?: number;
+}
+
 export class ProjectModel {
   private pool = db.pool; // Replace with your database connection pool
 
@@ -41,6 +45,24 @@ export class ProjectModel {
     } catch (error) {
       console.error("Error creating project:", error);
       return null;
+    } finally {
+      client.release();
+    }
+  }
+
+  async getProjectsByTelegramChatID(
+    telegramChatID: string
+  ): Promise<ProjectID | null> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = "SELECT project_id FROM projects WHERE telegram_chat_id=$1";
+      const result = await client.query(query, [telegramChatID]);
+
+      // Return all project IDs as an array or null if no results
+      return result.rows[0];
+    } catch (error) {
+      console.error("Error fetching projects by Telegram chat ID:", error);
+      return null; // Return null in case of error
     } finally {
       client.release();
     }
