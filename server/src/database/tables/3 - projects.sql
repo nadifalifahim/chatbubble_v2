@@ -10,12 +10,6 @@ CREATE TABLE Projects (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE Projects
-ADD COLUMN project_status VARCHAR(10);
-
-ALTER TABLE Projects
-ADD COLUMN telegram_chat_id TEXT;
-
 CREATE OR REPLACE FUNCTION generate_project_id()
 RETURNS TRIGGER AS $$
 BEGIN

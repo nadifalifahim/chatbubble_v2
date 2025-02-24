@@ -1,6 +1,6 @@
 CREATE TABLE Comments (
     comment_id SERIAL PRIMARY KEY,
-    ticket_id INT NOT NULL,
+    ticket_id VARCHAR(20) NOT NULL,
     user_id INT NOT NULL,
     comment_text TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

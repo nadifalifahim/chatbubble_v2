@@ -8,6 +8,7 @@ export const db = {
         database: process.env.DATABASE,
         host: process.env.HOST,
         port: 5432,
+        ssl: { rejectUnauthorized: false },
     }),
 };
 export default db;

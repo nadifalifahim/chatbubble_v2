@@ -1,6 +1,6 @@
 CREATE TABLE ProjectKeywords (
     project_keyword_id SERIAL PRIMARY KEY,
-    project_id INT NOT NULL,
+    project_id VARCHAR(20) NOT NULL,
     keyword_id INT NOT NULL,
     category_id INT NOT NULL,
     FOREIGN KEY (project_id) REFERENCES Projects (project_id),

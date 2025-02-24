@@ -1,6 +1,6 @@
 CREATE TABLE Attachments (
     attachment_id SERIAL PRIMARY KEY,
-    ticket_id INT NOT NULL,
+    ticket_id VARCHAR(20) NOT NULL,
     file_path VARCHAR(255) NOT NULL,
     file_name VARCHAR(100),
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

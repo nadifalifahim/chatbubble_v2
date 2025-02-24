@@ -1,5 +1,5 @@
 CREATE TABLE ProjectTeams (
-    project_id INT NOT NULL,
+    project_id VARCHAR(20) NOT NULL,
     team_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

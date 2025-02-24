@@ -36,6 +36,20 @@ export class ProjectModel {
     }
   }
 
+  async getProject(projectID: string): Promise<Project[] | null> {
+    const client: PoolClient = await this.pool.connect();
+    try {
+      const query = "SELECT * FROM projects WHERE project_id=$1";
+      const result = await client.query(query, [projectID]);
+      return result.rows;
+    } catch (error) {
+      console.error("Error creating project:", error);
+      return null;
+    } finally {
+      client.release();
+    }
+  }
+
   async getProjects(): Promise<Project[] | null> {
     const client: PoolClient = await this.pool.connect();
     try {

@@ -34,6 +34,23 @@ export class ProjectModel {
             }
         });
     }
+    getProject(projectID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const client = yield this.pool.connect();
+            try {
+                const query = "SELECT * FROM projects WHERE project_id=$1";
+                const result = yield client.query(query, [projectID]);
+                return result.rows;
+            }
+            catch (error) {
+                console.error("Error creating project:", error);
+                return null;
+            }
+            finally {
+                client.release();
+            }
+        });
+    }
     getProjects() {
         return __awaiter(this, void 0, void 0, function* () {
             const client = yield this.pool.connect();
