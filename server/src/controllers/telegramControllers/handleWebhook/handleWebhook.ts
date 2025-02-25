@@ -117,6 +117,26 @@ export const handleWebhook = async (req: Request, res: Response) => {
       console.log(projectID.project_id);
     }
 
+    const categoryKeywords: { [key: string]: number } = {
+      otp: 1, // Example: OTP issues
+      portal: 2, // Example: Password reset
+      report: 3, // Example: Payment issues
+      download: 3,
+    };
+
+    // Function to determine category based on message content
+    const determineCategory = (message: string): number => {
+      const lowerMessage = message.toLowerCase();
+
+      for (const keyword in categoryKeywords) {
+        if (lowerMessage.includes(keyword)) {
+          return categoryKeywords[keyword]; // ✅ Return matched category
+        }
+      }
+
+      return getRandomData([5]); // ✅ Default to random if no match
+    };
+
     const ticket = {
       message: telegramUpdate.message.text,
       reportedBy: `${telegramUpdate.message.from.first_name || ""}${
@@ -126,7 +146,7 @@ export const handleWebhook = async (req: Request, res: Response) => {
       }`,
       platform: "Telegram",
       assignedTeamId: 1,
-      categoryId: getRandomData([1, 3, 4]),
+      categoryId: determineCategory(telegramUpdate.message.text),
       projectId: `${projectID?.project_id}`,
       telegramUserId: telegramUpdate.message.from.id,
       telegramMessageId: telegramUpdate.message.message_id,
