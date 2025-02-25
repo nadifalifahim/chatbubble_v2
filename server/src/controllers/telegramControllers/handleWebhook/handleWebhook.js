@@ -25,6 +25,19 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
     const getRandomData = (data) => {
         return data[Math.floor(Math.random() * data.length)];
     };
+    // Function to determine category based on message content
+    const determineCategory = (message) => {
+        if (!message) {
+            return getRandomData([5]); // Default category if message is missing
+        }
+        const lowerMessage = message.toLowerCase();
+        for (const keyword in categoryKeywords) {
+            if (lowerMessage.includes(keyword)) {
+                return categoryKeywords[keyword]; // ✅ Return matched category
+            }
+        }
+        return getRandomData([5]); // ✅ Default to random if no match
+    };
     if (telegramUpdate.message && /#ChatID/.test(telegramUpdate.message.text)) {
         // Construct the reply message with ticket details
         const messageText = `Your chat id is: ${telegramUpdate.message.chat.id}`;
@@ -53,24 +66,14 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         telegramUpdate.message &&
         (telegramUpdate.message.photo || telegramUpdate.message.document)) {
         const projectID = yield projectModel.getProjectsByTelegramChatID(telegramUpdate.message.chat.id);
-        // Function to determine category based on message content
-        const determineCategory = (message) => {
-            const lowerMessage = message.toLowerCase();
-            for (const keyword in categoryKeywords) {
-                if (lowerMessage.includes(keyword)) {
-                    return categoryKeywords[keyword]; // ✅ Return matched category
-                }
-            }
-            return getRandomData([5]); // ✅ Default to random if no match
-        };
         const ticket = {
-            message: telegramUpdate.message.caption,
+            message: telegramUpdate.message.caption || "",
             reportedBy: `${telegramUpdate.message.from.first_name || ""}${telegramUpdate.message.from.last_name
                 ? ` ${telegramUpdate.message.from.last_name}`
                 : ""}`,
             platform: "Telegram",
             assignedTeamId: 1,
-            categoryId: determineCategory(telegramUpdate.message.text),
+            categoryId: determineCategory(telegramUpdate.message.text || telegramUpdate.message.caption),
             projectId: `${projectID === null || projectID === void 0 ? void 0 : projectID.project_id}`,
             telegramUserId: telegramUpdate.message.from.id,
             telegramMessageId: telegramUpdate.message.message_id,
