@@ -16,6 +16,25 @@ const projectModel = new ProjectModel();
 export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const telegramUpdate = req.body;
     console.log(telegramUpdate);
+    const categoryKeywords = {
+        otp: 1, // Example: OTP issues
+        portal: 2, // Example: Password reset
+        report: 3, // Example: Payment issues
+        download: 3,
+    };
+    const getRandomData = (data) => {
+        return data[Math.floor(Math.random() * data.length)];
+    };
+    // Function to determine category based on message content
+    const determineCategory = (message) => {
+        const lowerMessage = message.toLowerCase();
+        for (const keyword in categoryKeywords) {
+            if (lowerMessage.includes(keyword)) {
+                return categoryKeywords[keyword]; // ✅ Return matched category
+            }
+        }
+        return getRandomData([5]); // ✅ Default to random if no match
+    };
     if (telegramUpdate.message && /#ChatID/.test(telegramUpdate.message.text)) {
         // Construct the reply message with ticket details
         const messageText = `Your chat id is: ${telegramUpdate.message.chat.id}`;
@@ -51,14 +70,14 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 : ""}`,
             platform: "Telegram",
             assignedTeamId: 1,
-            categoryId: 1,
+            categoryId: determineCategory(telegramUpdate.message.text),
             projectId: `${projectID === null || projectID === void 0 ? void 0 : projectID.project_id}`,
             telegramUserId: telegramUpdate.message.from.id,
             telegramMessageId: telegramUpdate.message.message_id,
             telegramChatId: telegramUpdate.message.chat.id,
             telegramChatTitle: telegramUpdate.message.chat.title,
             status: "open",
-            priority: "high",
+            priority: getRandomData(["high", "low", "medium"]),
             telegramAttachmentId: telegramUpdate.message.photo
                 ? telegramUpdate.message.photo[telegramUpdate.message.photo.length - 1]
                     .file_id
@@ -97,7 +116,7 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 : ""}`,
             platform: "Telegram",
             assignedTeamId: 1,
-            categoryId: getRandomData([1, 3, 4]),
+            categoryId: determineCategory(telegramUpdate.message.text),
             projectId: `${projectID === null || projectID === void 0 ? void 0 : projectID.project_id}`,
             telegramUserId: telegramUpdate.message.from.id,
             telegramMessageId: telegramUpdate.message.message_id,
