@@ -18,23 +18,6 @@ export const handleWebhook = async (req: Request, res: Response) => {
     download: 3,
   };
 
-  const getRandomData = (data: any[]) => {
-    return data[Math.floor(Math.random() * data.length)];
-  };
-
-  // Function to determine category based on message content
-  const determineCategory = (message: string): number => {
-    const lowerMessage = message.toLowerCase();
-
-    for (const keyword in categoryKeywords) {
-      if (lowerMessage.includes(keyword)) {
-        return categoryKeywords[keyword]; // ✅ Return matched category
-      }
-    }
-
-    return getRandomData([5]); // ✅ Default to random if no match
-  };
-
   if (telegramUpdate.message && /#ChatID/.test(telegramUpdate.message.text)) {
     // Construct the reply message with ticket details
     const messageText = `Your chat id is: ${telegramUpdate.message.chat.id}`;
@@ -83,6 +66,22 @@ export const handleWebhook = async (req: Request, res: Response) => {
     const projectID = await projectModel.getProjectsByTelegramChatID(
       telegramUpdate.message.chat.id
     );
+    const getRandomData = (data: any[]) => {
+      return data[Math.floor(Math.random() * data.length)];
+    };
+
+    // Function to determine category based on message content
+    const determineCategory = (message: string): number => {
+      const lowerMessage = message.toLowerCase();
+
+      for (const keyword in categoryKeywords) {
+        if (lowerMessage.includes(keyword)) {
+          return categoryKeywords[keyword]; // ✅ Return matched category
+        }
+      }
+
+      return getRandomData([5]); // ✅ Default to random if no match
+    };
 
     const ticket = {
       message: telegramUpdate.message.caption,
@@ -140,6 +139,23 @@ export const handleWebhook = async (req: Request, res: Response) => {
     if (projectID) {
       console.log(projectID.project_id);
     }
+
+    const getRandomData = (data: any[]) => {
+      return data[Math.floor(Math.random() * data.length)];
+    };
+
+    // Function to determine category based on message content
+    const determineCategory = (message: string): number => {
+      const lowerMessage = message.toLowerCase();
+
+      for (const keyword in categoryKeywords) {
+        if (lowerMessage.includes(keyword)) {
+          return categoryKeywords[keyword]; // ✅ Return matched category
+        }
+      }
+
+      return getRandomData([5]); // ✅ Default to random if no match
+    };
 
     const ticket = {
       message: telegramUpdate.message.text,
