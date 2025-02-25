@@ -25,16 +25,6 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
     const getRandomData = (data) => {
         return data[Math.floor(Math.random() * data.length)];
     };
-    // Function to determine category based on message content
-    const determineCategory = (message) => {
-        const lowerMessage = message.toLowerCase();
-        for (const keyword in categoryKeywords) {
-            if (lowerMessage.includes(keyword)) {
-                return categoryKeywords[keyword]; // ✅ Return matched category
-            }
-        }
-        return getRandomData([5]); // ✅ Default to random if no match
-    };
     if (telegramUpdate.message && /#ChatID/.test(telegramUpdate.message.text)) {
         // Construct the reply message with ticket details
         const messageText = `Your chat id is: ${telegramUpdate.message.chat.id}`;
@@ -63,6 +53,16 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         telegramUpdate.message &&
         (telegramUpdate.message.photo || telegramUpdate.message.document)) {
         const projectID = yield projectModel.getProjectsByTelegramChatID(telegramUpdate.message.chat.id);
+        // Function to determine category based on message content
+        const determineCategory = (message) => {
+            const lowerMessage = message.toLowerCase();
+            for (const keyword in categoryKeywords) {
+                if (lowerMessage.includes(keyword)) {
+                    return categoryKeywords[keyword]; // ✅ Return matched category
+                }
+            }
+            return getRandomData([5]); // ✅ Default to random if no match
+        };
         const ticket = {
             message: telegramUpdate.message.caption,
             reportedBy: `${telegramUpdate.message.from.first_name || ""}${telegramUpdate.message.from.last_name
@@ -109,6 +109,16 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         if (projectID) {
             console.log(projectID.project_id);
         }
+        // Function to determine category based on message content
+        const determineCategory = (message) => {
+            const lowerMessage = message.toLowerCase();
+            for (const keyword in categoryKeywords) {
+                if (lowerMessage.includes(keyword)) {
+                    return categoryKeywords[keyword]; // ✅ Return matched category
+                }
+            }
+            return getRandomData([5]); // ✅ Default to random if no match
+        };
         const ticket = {
             message: telegramUpdate.message.text,
             reportedBy: `${telegramUpdate.message.from.first_name || ""}${telegramUpdate.message.from.last_name

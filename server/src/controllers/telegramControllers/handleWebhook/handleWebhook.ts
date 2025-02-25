@@ -18,6 +18,10 @@ export const handleWebhook = async (req: Request, res: Response) => {
     download: 3,
   };
 
+  const getRandomData = (data: any[]) => {
+    return data[Math.floor(Math.random() * data.length)];
+  };
+
   if (telegramUpdate.message && /#ChatID/.test(telegramUpdate.message.text)) {
     // Construct the reply message with ticket details
     const messageText = `Your chat id is: ${telegramUpdate.message.chat.id}`;
@@ -66,9 +70,6 @@ export const handleWebhook = async (req: Request, res: Response) => {
     const projectID = await projectModel.getProjectsByTelegramChatID(
       telegramUpdate.message.chat.id
     );
-    const getRandomData = (data: any[]) => {
-      return data[Math.floor(Math.random() * data.length)];
-    };
 
     // Function to determine category based on message content
     const determineCategory = (message: string): number => {
@@ -139,10 +140,6 @@ export const handleWebhook = async (req: Request, res: Response) => {
     if (projectID) {
       console.log(projectID.project_id);
     }
-
-    const getRandomData = (data: any[]) => {
-      return data[Math.floor(Math.random() * data.length)];
-    };
 
     // Function to determine category based on message content
     const determineCategory = (message: string): number => {
