@@ -26,7 +26,7 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
         return data[Math.floor(Math.random() * data.length)];
     };
     // Function to determine category based on message content
-    const determineCategory = (message) => {
+    const determineCategory = (message = "") => {
         if (!message) {
             return getRandomData([5]); // Default category if message is missing
         }
@@ -113,7 +113,7 @@ export const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, fun
             console.log(projectID.project_id);
         }
         // Function to determine category based on message content
-        const determineCategory = (message) => {
+        const determineCategory = (message = "") => {
             const lowerMessage = message.toLowerCase();
             for (const keyword in categoryKeywords) {
                 if (lowerMessage.includes(keyword)) {
