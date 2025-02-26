@@ -23,7 +23,7 @@ export const handleWebhook = async (req: Request, res: Response) => {
   };
 
   // Function to determine category based on message content
-  const determineCategory = (message?: string): number => {
+  const determineCategory = (message: string = ""): number => {
     if (!message) {
       return getRandomData([5]); // Default category if message is missing
     }
@@ -148,7 +148,7 @@ export const handleWebhook = async (req: Request, res: Response) => {
     }
 
     // Function to determine category based on message content
-    const determineCategory = (message: string): number => {
+    const determineCategory = (message: string = ""): number => {
       const lowerMessage = message.toLowerCase();
 
       for (const keyword in categoryKeywords) {
